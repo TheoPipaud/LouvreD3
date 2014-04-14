@@ -47,6 +47,7 @@
     <button class="satisfaction" data-annee="" data-num="">Satisfaction par couleur</button>
     <button class="orderAge" data-annee="" data-num="">Ordonner</button>
     <button class="orderSatisf" data-annee="" data-num="">Ordonner satisfaction</button>
+    <button class="resetTexte" data-annee="" data-num="">Supprimer texte</button>
 
     <div id="chart"></div>
 
@@ -260,6 +261,7 @@
           var CtNbInColonne = [0,0]; // Dernier index en Y d'une colonne
           var a=0;
           var b=0;
+           $('.monTexte').remove();
 
           svg.selectAll("circle")
               .data(data[0].data)
@@ -355,13 +357,23 @@
                 "font-size":"25px",
                 "fill":"#000"
 
-              });
+              })
+              .attr('class', 'monTexte');
+              console.log(texte);
 
+            
+                $('.resetTexte').on("click", function() {
+                console.log(texte);
+                $('.monTexte').remove();
+
+              });
 
 
             
 
       });
+
+     
 
       $('.orderSatisf').on("click", function() {
    
@@ -376,7 +388,7 @@
           var c=0;
           var d=0;
           var e=0;
-          
+           $('.monTexte').remove();
 
           svg.selectAll("circle")
               .data(data[0].data)
@@ -485,7 +497,8 @@
                 "font-size":"25px",
                 "fill":"#000"
 
-              });
+              })
+              .attr('class', 'monTexte');
 
               
 
