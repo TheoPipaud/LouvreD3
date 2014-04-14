@@ -311,15 +311,19 @@
               });
               
               var dataText=[[a, "valeur1"], [b, "valeur2"]];
+              var start_val = 0,
+              duration = 5000,
+              end_val = [a, b];
 
               
                var texte = svg.selectAll("text")
               .data(dataText)
               .enter()
               .append("text")
-              .text(function(d){
-                return d[0]+'%'+" "+d[1];
-              })
+              .text(start_val)
+              /*.text(function(d){
+                return d[0]+'%'+d[1];
+              })*/
 
               .attr({
                 x: function(d, i){
@@ -334,11 +338,27 @@
                 "fill":"#000"
 
               })
-              .attr('class', 'monTexte');
+              .attr('class', 'monTexte')
+
+              .transition()
+    .duration(3000)
+        .tween("text", function(d) {
+            var i = d3.interpolate(this.textContent, d[0]),
+                prec = (d[0] + "").split("."),
+                round = (prec.length > 1) ? Math.pow(10, prec[1].length) : 1;
+
+            return function(t) {
+                this.textContent = Math.round(i(t) * round) / round+'%'+' '+d[1];
+            };
+        });
              
               
 
             
+
+
+
+
                 $('.resetTexte').on("click", function() {
                 console.log(texte);
                 $('.monTexte').remove();
