@@ -273,7 +273,7 @@
                     switch(true){
 
                       case (d.age < 18) :
-                        a++;
+                         a++;
                           NbCercleDansColonne[0] += 1; // Informe d'une boule supp. dans la colonne
 
                           if((NbCercleDansColonne[0]-1)/NbMaxInLigne==1){ // Vérifie si on arrive au max de boule / ligne
@@ -282,8 +282,9 @@
                           }
                           
                           posY[i] = 200 - marge * CtNbInColonne[0]; // Prépare la position en Y de la boule 
-
-                          return posX + (NbCercleDansColonne[0]-1)*marge; // Retourne la position en X de la boule
+                          
+                          return  (posX + (NbCercleDansColonne[0]-1)*marge) ; // Retourne la position en X de la boule
+                    
 
                           break;
 
@@ -296,39 +297,11 @@
                             CtNbInColonne[1] += 1;
                           }
                           posY[i] = 200 - marge * CtNbInColonne[1]; 
+                         
                           return 2*posX + (NbCercleDansColonne[1]-1)*marge;
                           break;
                     }
                    
-                    //   case (d.age <= 18) :
-                          
-                    //       a++;
-                    //       console.log('col 200__ i : ', i, "___ a : ", a);
-                    //       console.log((a*marge)+col);
-                    //       return col;
-
-                    //       break;
-                    //   case (d.age > 18 && d.age <= 25):
-                        
-                    //       return 2*col;
-                    //       break;
-                    //   case (d.age > 25 && d.age <= 35):
-                         
-                    //       return 3*col;
-                    //       break;
-                    //   case (d.age > 35 && d.age <= 45):
-                         
-                    //       return 4*col;
-                    //       break;
-                    //   case (d.age > 45 && d.age < 65):
-                         
-                    //       return 5*col;
-                    //       break;
-                    //   case (d.age >= 65):
-                          
-                    //       return 6*col;
-                    //       break;
-                    // }
                 },
                 cy: function(d, i){
                   return posY[i];
@@ -336,30 +309,34 @@
                 
 
               });
+              
+              var dataText=[[a, "valeur1"], [b, "valeur2"]];
 
-             
+              
                var texte = svg.selectAll("text")
-              .data(CtNbInColonne)
+              .data(dataText)
               .enter()
               .append("text")
               .text(function(d){
-                return a+'%'+b+'%';
+                return d[0]+'%'+" "+d[1];
               })
+
               .attr({
                 x: function(d, i){
                  
-                  return 500; // exemple : x20 pour l'échelle
+                  return (i+1)*200; // exemple : x20 pour l'échelle
                 },
                 y: function(d, i){
                   return 250; // exemple : x20 pour l'échelle
                 },
 
-                "font-size":"25px",
+                "font-size":"16px",
                 "fill":"#000"
 
               })
               .attr('class', 'monTexte');
-              console.log(texte);
+             
+              
 
             
                 $('.resetTexte').on("click", function() {
@@ -386,7 +363,7 @@
           var NbMaxInLigne = 5; // Nb de boule max par ligne
           var CtNbInColonne = [0,0, 0]; // Dernier index en Y d'une colonne
           var c=0;
-          var d=0;
+          var f=0;
           var e=0;
            $('.monTexte').remove();
 
@@ -399,7 +376,7 @@
                     //console.log(d);
                     switch(true){
 
-                      case (d.satisfaction == 'assez') :
+                      case (d.satisfaction == 'peu') :
                         c++;
                           NbCercleDansColonne[0] += 1; // Informe d'une boule supp. dans la colonne
 
@@ -414,8 +391,8 @@
 
                           break;
 
-                      case (d.satisfaction == 'très') :
-                          d++;
+                      case (d.satisfaction == 'assez') :
+                          e++;
                           NbCercleDansColonne[1] += 1;
 
                           if((NbCercleDansColonne[1]-1)/NbMaxInLigne==1){
@@ -426,8 +403,8 @@
                           return 2*posX + (NbCercleDansColonne[1]-1)*marge;
                           break;
 
-                     case (d.satisfaction == 'peu') :
-                          e++;
+                     case (d.satisfaction == 'très') :
+                          f++;
                           NbCercleDansColonne[2] += 1;
 
                           if((NbCercleDansColonne[2]-1)/NbMaxInLigne==1){
@@ -476,25 +453,25 @@
 
               });
 
-              
+              dataText=[[c,"peu ou pas satisfaits"], [e, 'satisfaits'], [f, 'très satisfaits']];
 
              svg.selectAll("text")
-              .data(CtNbInColonne)
+              .data(dataText)
               .enter()
               .append("text")
               .text(function(d){
-                return c+'%'+d+'%'+e+'%';
+                return d[0]+'%'+' '+d[1];
               })
               .attr({
                 x: function(d, i){
                  
-                  return 500; // exemple : x20 pour l'échelle
+                  return (i+1)*200; // exemple : x20 pour l'échelle
                 },
                 y: function(d, i){
                   return 250; // exemple : x20 pour l'échelle
                 },
 
-                "font-size":"25px",
+                "font-size":"16px",
                 "fill":"#000"
 
               })
