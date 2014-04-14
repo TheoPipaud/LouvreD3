@@ -116,6 +116,8 @@
 
       }
 
+   
+
 
       d3.selectAll(".btn").on("click", function() {
           $this       = $(this);
@@ -261,7 +263,7 @@
 
           svg.selectAll("circle")
               .data(data[0].data)
-              .transition()
+              .transition().duration(1000).ease("ease-in")
               .attr({
                 cx: function(d, i){
           
@@ -333,8 +335,9 @@
 
               });
 
-               svg.selectAll("text")
-              .data(data[0].data)
+             
+               var texte = svg.selectAll("text")
+              .data(CtNbInColonne)
               .enter()
               .append("text")
               .text(function(d){
@@ -354,15 +357,14 @@
 
               });
 
-              
 
-              
 
             
 
       });
 
       $('.orderSatisf').on("click", function() {
+   
           var posX = 200; // position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
           var posY = Array(); // Tableau des positions Y de chaque boule
           var marge = 20; // marge entre chaque boule (1 boule ~= 16px)
@@ -371,11 +373,14 @@
 
           var NbMaxInLigne = 5; // Nb de boule max par ligne
           var CtNbInColonne = [0,0, 0]; // Dernier index en Y d'une colonne
+          var c=0;
+          var d=0;
+          var e=0;
           
 
           svg.selectAll("circle")
               .data(data[0].data)
-              .transition()
+              .transition().duration(1000).ease("ease-in")
               .attr({
                 cx: function(d, i){
           
@@ -383,6 +388,7 @@
                     switch(true){
 
                       case (d.satisfaction == 'assez') :
+                        c++;
                           NbCercleDansColonne[0] += 1; // Informe d'une boule supp. dans la colonne
 
                           if((NbCercleDansColonne[0]-1)/NbMaxInLigne==1){ // Vérifie si on arrive au max de boule / ligne
@@ -397,7 +403,7 @@
                           break;
 
                       case (d.satisfaction == 'très') :
-
+                          d++;
                           NbCercleDansColonne[1] += 1;
 
                           if((NbCercleDansColonne[1]-1)/NbMaxInLigne==1){
@@ -409,7 +415,7 @@
                           break;
 
                      case (d.satisfaction == 'peu') :
-
+                          e++;
                           NbCercleDansColonne[2] += 1;
 
                           if((NbCercleDansColonne[2]-1)/NbMaxInLigne==1){
@@ -455,6 +461,29 @@
                   return posY[i];
                 }
                 
+
+              });
+
+              
+
+             svg.selectAll("text")
+              .data(CtNbInColonne)
+              .enter()
+              .append("text")
+              .text(function(d){
+                return c+'%'+d+'%'+e+'%';
+              })
+              .attr({
+                x: function(d, i){
+                 
+                  return 500; // exemple : x20 pour l'échelle
+                },
+                y: function(d, i){
+                  return 250; // exemple : x20 pour l'échelle
+                },
+
+                "font-size":"25px",
+                "fill":"#000"
 
               });
 
