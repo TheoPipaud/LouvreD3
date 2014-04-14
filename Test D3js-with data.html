@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+      body {
+        padding:0 100px;
+        margin:0px;
+        background:#CCC;
+      }
+      svg{
+        padding:0;margin:0;
+      }
+      text{
+        display:block;
+      }
+      #chart{
+        background:#FFF;
+      }
+      circle {
+        stroke: white;
+        stroke-width: 2px;
+        opacity: .8;
+      }
+      .chart circle {
+        fill: #aaa;
+        stroke: #666;
+        stroke-width: 1.5px;
+      }
+
+    </style>
+
+  </head>
+  <body>
+    <button id="btn1">Animation cercles </button>
+    <button class="btn" data-annee="2005" data-num="0">Année 2005 </button>
+    <button class="btn" data-annee="2006" data-num="1">Année 2006 </button>
+    <button class="btn" data-annee="2007" data-num="2">Année 2007 </button>
+    <button class="btn" data-annee="2008" data-num="3">Année 2008 </button>
+    <button class="btn" data-annee="2009" data-num="4">Année 2009 </button>
+    <button class="btn" data-annee="2010" data-num="5">Année 2010 </button>
+
+    <button class="age" data-annee="" data-num="">Age par couleur </button>
+    <button class="reset" data-annee="" data-num="">Reset couleur </button>
+
+    <button class="satisfaction" data-annee="" data-num="">Satisfaction par couleur</button>
+    <button class="order" data-annee="" data-num="">Ordonner</button>
+
+    <div id="chart"></div>
+
+    <script src="d3.min.js"></script>
+    <script src="jquery.js"></script>
+    <script>
+     
+      var width = window.innerWidth,
+          height = window.innerHeight;
+
+      // Initialise D3.js dans la div#chart
+      var svg = d3.select("#chart").append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+      var data;
+
+      var margin = {  top:10,  right:10,   bottom:10,   left:10  };
+      var NbCercle = 25;
+      var MargeCercle = 20,
+          Rangee = 0,
+          x = 100,
+          y = 100;
+
+
+
+      d3.json("data.json", function(json) {
+          console.log(json);  //Log output to console
+          data = json;
+
+          generateVisualization();
+
+      });
+
+      function generateVisualization(){
+
+        /*
+        svg.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr('cx', function(d,i){
+            return i*(200/data.length);
+        })
+        .attr('cy', function(d,i){
+            return enLigne(d,i);
+        })
+        .attr('r',8);
+        */
+
+
+        /* Test parcours et affichage JSON : */
+        /*
+        svg.selectAll("text")
+          .data(data)
+          .enter()
+          .append("text")
+          .attr('x', 50)
+          .attr('y', function(d,i){
+              return 50+i*50;
+          })
+          .text(function(d) {
+              return "Ok on a les datas de " + d.annee;
+          });
+
+        */
+
+      }
+
+
+      d3.selectAll(".btn").on("click", function() {
+          $this       = $(this);
+          var annee   = $this.data('annee');
+          var num     = $this.data('num');
+          var echelle = 20;
+          var marge   = 20;
+          var j       = 0;
+          var k       = 0;
+          var signe;
+          var random = Math.random();
+
+          var l = 0;
+          var m = 0;
+          
+          console.log(random);
+
+          console.log('btn cliqué !');
+          //console.log(data[num].data);
+
+          svg.selectAll("circle")
+              .data(data[num].data)
+              .enter()
+              .append("circle")
+              .attr('cx', function(d,i){
+                  if(i % 10 == 0 && i != 0){
+                    // lorsqu'on arrive à 10 ou plus on soustrait 
+                    // ce palier pour que i soit toujours entre 1 et 9
+                    k=i;
+                  }
+                  return (i-k)*echelle+marge; // exemple : x20 pour l'échelle
+              })
+              .attr('cy', function(d,i){
+                  if(i % 10 == 0 && i != 0){
+                    // à chaque modulo, on incrémente j
+                    j++;
+                  }
+                  return j*echelle+marge; // exemple : x20 pour l'échelle
+              })
+              .attr('r',8)
+              .attr('class', annee)
+              // .on('mouseover', showColor)
+              // .on('mouseout', resetColor);
+
+              // .attr("fill", function(d) {
+              //     // Couleur en fonction de l'age sur les points
+              //     return "rgb(0, "+ (255 - d.age * 5) +" , " + (255 - d.age * 3) + ")";
+              // });
+
+          // Affichage des "Ages" dans les cercles
+          // ______________________________________
+          
+          /*
+          svg.selectAll("text")
+              .data(data[num].data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                return d.age;
+              })
+              .attr({
+                x: function(d, i){
+                  if(i % 10 == 0 && i != 0){
+                    // lorsqu'on arrive à 10 ou plus on soustrait 
+                    // ce palier pour que i soit toujours entre 1 et 9
+                    l=i;
+                  }
+                  return (i-l)*echelle+marge-5; // exemple : x20 pour l'échelle
+                },
+                y: function(d, i){
+                  if(i % 10 == 0 && i != 0){
+                    // à chaque modulo, on incrémente j
+                    m++;
+                  }
+                  return m*echelle+marge+3; // exemple : x20 pour l'échelle
+                },
+
+                "font-size":"10px",
+                "fill":"#FFF"
+
+              });
+
+            */
+          
+
+      });
+
+      // _____________________________________ 
+      // ____________ FILTRES 
+      // _____________________________________ 
+
+      $('.age').on("click", function() {
+          svg.selectAll("circle")
+              .transition()
+              .style("fill", function(d) {
+                  // Couleur en fonction de l'age sur les points
+                  return "rgb(0, "+ (255 - d.age * 5) +" , " + (255 - d.age * 3) + ")";
+              });
+      });
+
+
+      $(".reset").on("click", function() {
+          svg.selectAll("circle")
+              .transition()
+              .style("fill", function(d) {
+                  return "rgb(0, 0 ,0)";
+              });
+      });
+
+      $('.satisfaction').on("click", function() {
+
+          svg.selectAll("circle")
+              .transition()
+              .style("fill", function(d) {
+                  // Couleur en fonction de l'age sur les points
+                  if(d.satisfaction == "très"){
+                    return "rgb(17, 224, 17)";
+                  }
+                  else if(d.satisfaction == "assez"){
+                    return "rgb(249, 245, 14)";
+                  }
+                  else if(d.satisfaction == "peu"){
+                    return "rgb(221, 78, 17)";
+                  }
+                  else{
+
+                  }
+              });
+
+      });
+     
+      var NbCercleDansColonne; // Index d'une boule sur une ligne dans une colonne
+      var posX = 200; // position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
+      var posY; // Tableau des positions Y de chaque boule
+      var marge = 20; // marge entre chaque boule (1 boule ~= 16px)
+      // var NbCercleDansColonne = [0,0]; // http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array     
+      var NbMaxInLigne; // Nb de boule max par ligne
+      var CtNbInColonne; // Dernier index en Y d'une colonne
+      
+      
+      $('.order').on("click", function() {
+          NbMaxInLigne = 30;
+          CtNbInColonne = [0,0];
+          posY = Array();
+          NbCercleDansColonne = Array.apply(null, new Array(2)).map(Number.prototype.valueOf,0);
+
+          svg.selectAll("circle")
+              .data(data[0].data)
+              .transition()
+              .attr({
+                cx: function(d, i){
+          
+                    //console.log(d);
+                    switch(true){
+
+                      case (d.age < 18) :
+                          
+                          return ordonnerPos(0, i);
+
+                          break;
+
+                      case (d.age >= 18 ):
+
+                          return ordonnerPos(1, i);
+
+                          break;
+                    }
+                   
+                    //   case (d.age <= 18) :
+                          
+                    //       a++;
+                    //       console.log('col 200__ i : ', i, "___ a : ", a);
+                    //       console.log((a*marge)+col);
+                    //       return col;
+
+                    //       break;
+                    //   case (d.age > 18 && d.age <= 25):
+                        
+                    //       return 2*col;
+                    //       break;
+                    //   case (d.age > 25 && d.age <= 35):
+                         
+                    //       return 3*col;
+                    //       break;
+                    //   case (d.age > 35 && d.age <= 45):
+                         
+                    //       return 4*col;
+                    //       break;
+                    //   case (d.age > 45 && d.age < 65):
+                         
+                    //       return 5*col;
+                    //       break;
+                    //   case (d.age >= 65):
+                          
+                    //       return 6*col;
+                    //       break;
+                    // }
+                },
+                cy: function(d, i){
+                  return posY[i];
+                }
+                
+
+              });
+
+              
+
+      });
+      
+      function ordonnerPos(index, i){
+        
+        NbCercleDansColonne[index] += 1; // Informe d'une boule supp. dans la colonne
+        
+        if((NbCercleDansColonne[index]-1)/NbMaxInLigne==1){ // Vérifie si on arrive au max de boule / ligne
+          NbCercleDansColonne[index] = 1; // Remet l'index en X à 1
+          CtNbInColonne[index] += 1;      // Incremente l'index en Y
+        }                  
+      
+        posY[i] = 200 - marge * CtNbInColonne[index]; // Prépare la position en Y de la boule 
+        
+        return (index+1)*posX + (NbCercleDansColonne[index]-1)*marge; // Retourne la position en X de la boule
+      
+      }
+
+
+      // http://jsfiddle.net/maniator/Bvmgm/6/
+      var showColor = (function(){    
+
+          return function(){
+              d3.select(this).style("fill", function(d) {
+                  // Couleur en fonction de l'age sur les points
+                  return "rgb(0, "+ (255 - d.age * 5) +" , " + (255 - d.age * 3) + ")";
+              });
+          }
+
+      })();
+
+      var resetColor = (function(){
+
+          return function(){
+              d3.select(this).style("fill", "#000");
+          }
+
+      })();
+
+
+      /*
+
+      for (var i = 0; i < NbCercle; i++) {
+        // Tous les 10 cercles on décales les rangs
+        if(i % 10 == 0){
+          y += MargeCercle; // décalage 20px en Y
+          x =  MargeCercle; // reset à 20px en X
+          Rangee++;         // incrémente la variable rangée
+        }
+        // Ajoute les cercles au DOM
+        var circles = svg.append("circle")
+           .attr("cx", x)
+           .attr("cy", y)
+           .attr("r", 8)
+           .attr("class", "cercle-"+Rangee);
+
+        // Incremente 
+        x+= MargeCercle;
+
+      }
+
+      */
+
+
+      d3.select("#btn1").on("click", function() {
+
+          svg.selectAll("circle").transition().attr("cx", function(d, i) { 
+
+          });
+
+          // g.attr("transform", function(d, i) { return "translate(" + 20 * (i + 1) + ",20)"; })
+          //   .select("rect")
+          //   .style("opacity", 1);
+
+      });
+
+
+
+      // var force = d3.layout.force()
+      //     .nodes(nodes)
+      //     .links([])
+      //     .gravity(0)
+      //     .size([width, height])
+      //     .on("tick", tick);
+
+      // var node = svg.selectAll("circle");
+
+      // function tick(e) {
+      //   var k = .1 * e.alpha;
+
+      //   // Push nodes toward their designated focus.
+      //   nodes.forEach(function(o, i) {
+      //     o.y += (foci[o.id].y - o.y) * k;
+      //     o.x += (foci[o.id].x - o.x) * k;
+      //   });
+
+      //   node
+      //       .attr("cx", function(d) { return d.x; })
+      //       .attr("cy", function(d) { return d.y; });
+      // }
+
+      // setInterval(function(){
+      //   nodes.push({id: ~~(Math.random() * foci.length)});
+      //   force.start();
+
+      //   node = node.data(nodes);
+
+      //   node.enter().append("circle")
+      //       .attr("class", "node")
+      //       .attr("cx", function(d) { return d.x; })
+      //       .attr("cy", function(d) { return d.y; })
+      //       .attr("r", 8)
+      //       .style("fill", function(d) { return fill(d.id); })
+      //       .style("stroke", function(d) { return d3.rgb(fill(d.id)).darker(2); })
+      //       .call(force.drag);
+      // }, 500);
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+      body {
+        padding:0 100px;
+        margin:0px;
+        background:#CCC;
+      }
+      #chart{
+        background:#FFF;
+      }
+      circle {
+        stroke: white;
+        stroke-width: 2px;
+        opacity: .8;
+      }
+      .chart circle {
+        fill: #aaa;
+        stroke: #666;
+        stroke-width: 1.5px;
+      }
+
+    </style>
+
+  </head>
+  <body>
+    <button id="btn1">Animation cercles </button>
+    <div id="chart"></div>
+
+    <script src="d3.min.js"></script>
+    <script src="jquery.js"></script>
+    <script>
+     
+      var width = window.innerWidth,
+          height = window.innerHeight;
+
+      var data = [32, 57, 112];
+
+      // Initialise D3.js dans la div#chart
+      var svg = d3.select("#chart").append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+      var margin = {  top:10,  right:10,   bottom:10,   left:10  };
+      var NbCercle = 25;
+      var MargeCercle = 20,
+          Rangee = 0,
+          x = 100,
+          y = 100;
+
+
+      for (var i = 0; i < NbCercle; i++) {
+        // Tous les 10 cercles on décales les rangs
+        if(i % 10 == 0){
+          y += MargeCercle; // décalage 20px en Y
+          x =  MargeCercle; // reset à 20px en X
+          Rangee++;         // incrémente la variable rangée
+        }
+        // Ajoute les cercles au DOM
+        var circles = svg.append("circle")
+           .attr("cx", x)
+           .attr("cy", y)
+           .attr("r", 8)
+           .attr("class", "cercle-"+Rangee);
+
+        // Incremente 
+        x+= MargeCercle;
+
+      }
+
+
+      d3.select("#btn1").on("click", function() {
+
+          svg.selectAll("circle").transition().attr("cx", function(d, i) { 
+              
+
+
+              return 800;
+              
+
+          });
+
+          // g.attr("transform", function(d, i) { return "translate(" + 20 * (i + 1) + ",20)"; })
+          //   .select("rect")
+          //   .style("opacity", 1);
+
+      });
+
+
+
+      // var force = d3.layout.force()
+      //     .nodes(nodes)
+      //     .links([])
+      //     .gravity(0)
+      //     .size([width, height])
+      //     .on("tick", tick);
+
+      // var node = svg.selectAll("circle");
+
+      // function tick(e) {
+      //   var k = .1 * e.alpha;
+
+      //   // Push nodes toward their designated focus.
+      //   nodes.forEach(function(o, i) {
+      //     o.y += (foci[o.id].y - o.y) * k;
+      //     o.x += (foci[o.id].x - o.x) * k;
+      //   });
+
+      //   node
+      //       .attr("cx", function(d) { return d.x; })
+      //       .attr("cy", function(d) { return d.y; });
+      // }
+
+      // setInterval(function(){
+      //   nodes.push({id: ~~(Math.random() * foci.length)});
+      //   force.start();
+
+      //   node = node.data(nodes);
+
+      //   node.enter().append("circle")
+      //       .attr("class", "node")
+      //       .attr("cx", function(d) { return d.x; })
+      //       .attr("cy", function(d) { return d.y; })
+      //       .attr("r", 8)
+      //       .style("fill", function(d) { return fill(d.id); })
+      //       .style("stroke", function(d) { return d3.rgb(fill(d.id)).darker(2); })
+      //       .call(force.drag);
+      // }, 500);
+
+    </script>
+  </body>
+</html>
