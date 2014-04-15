@@ -117,45 +117,14 @@
 
 
       d3.selectAll(".btn").on("click", function() {
-          $this       = $(this);
-          var annee   = $this.data('annee');
-          var num     = $this.data('num');
+          var annee   = $(this).data('annee');
+          var num     = $(this).data('num');
           var echelle = 20;
           var marge   = 20;
-          var j       = 0;
-          var k       = 0;
           var signe;
-          var random = Math.random();
-
-          var l = 0;
-          var m = 0;
           
-          console.log(random);
-
-          console.log('btn cliqué !');
-          //console.log(data[num].data);
-
-          svg.selectAll("circle")
-              .data(data[num].data)
-              .enter()
-              .append("circle")
-              .attr('cx', function(d,i){
-                  if(i % 10 == 0 && i != 0){
-                    // lorsqu'on arrive à 10 ou plus on soustrait 
-                    // ce palier pour que i soit toujours entre 1 et 9
-                    k=i;
-                  }
-                  return (i-k)*echelle+marge; // exemple : x20 pour l'échelle
-              })
-              .attr('cy', function(d,i){
-                  if(i % 10 == 0 && i != 0){
-                    // à chaque modulo, on incrémente j
-                    j++;
-                  }
-                  return j*echelle+marge; // exemple : x20 pour l'échelle
-              })
-              .attr('r',8)
-              .attr('class', annee)
+          renderCircles("apparaitre", false, data, $(this), echelle , marge);
+          
               // .on('mouseover', showColor)
               // .on('mouseout', resetColor);
 
@@ -207,15 +176,15 @@
       // _____________________________________ 
 
       $('.age').on("click", function() {
-          renderCircles("couleur", "age", false, false, false);
+          renderCircles("couleur", "age");
       });
 
       $(".reset").on("click", function() {
-          renderCircles("couleur", "reset", false, false, false);
+          renderCircles("couleur", "reset");
       });
 
       $('.satisfaction').on("click", function() {
-         renderCircles("couleur", "satisfaction", false, false, false);
+         renderCircles("couleur", "satisfaction");
       });
      
       var NbCercleDansColonne; // Index d'une boule sur une ligne dans une colonne
@@ -233,7 +202,7 @@
           posY = Array();
           NbCercleDansColonne = Array.apply(null, new Array(2)).map(Number.prototype.valueOf,0);
 
-          renderCircles("ordonner", "age", false, data[0], false);
+          renderCircles("ordonner", "age", data[0]);
 
           
                    
@@ -271,12 +240,81 @@
               
 
       });
-
-
       
-      function renderCircles(type, sousType, variable, data, i){
+      function renderCircles(type, sousType, data, param1, param2 , param3){
 
         switch(type){
+          case ("apparaitre"):
+
+            var j       = 0;
+            var k       = 0;
+
+            svg.selectAll("circle")
+              .data(data[param1.data('num')].data)
+              .enter()
+              .append("circle")
+              .attr('cx', function(d,i){
+                  if(i % 10 == 0 && i != 0){
+                    // lorsqu'on arrive à 10 ou plus on soustrait 
+                    // ce palier pour que i soit toujours entre 1 et 9
+                    k=i;
+                  }
+                  return (i-k)*param2+param3; // exemple : x20 pour l'échelle
+              })
+              .attr('cy', function(d,i){
+                  if(i % 10 == 0 && i != 0){
+                    // à chaque modulo, on incrémente j
+                    j++;
+                  }
+                  return j*param2+param3; // exemple : x20 pour l'échelle
+              })
+              .attr('r',8)
+              .attr('class', param1.data('annee'))
+              // .on('mouseover', showColor)
+              // .on('mouseout', resetColor);
+
+              // .attr("fill", function(d) {
+              //     // Couleur en fonction de l'age sur les points
+              //     return "rgb(0, "+ (255 - d.age * 5) +" , " + (255 - d.age * 3) + ")";
+              // });
+
+          // Affichage des "Ages" dans les cercles
+          // ______________________________________
+          
+          /*
+          svg.selectAll("text")
+              .data(data[num].data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                return d.age;
+              })
+              .attr({
+                x: function(d, i){
+                  if(i % 10 == 0 && i != 0){
+                    // lorsqu'on arrive à 10 ou plus on soustrait 
+                    // ce palier pour que i soit toujours entre 1 et 9
+                    l=i;
+                  }
+                  return (i-l)*echelle+marge-5; // exemple : x20 pour l'échelle
+                },
+                y: function(d, i){
+                  if(i % 10 == 0 && i != 0){
+                    // à chaque modulo, on incrémente j
+                    m++;
+                  }
+                  return m*echelle+marge+3; // exemple : x20 pour l'échelle
+                },
+
+                "font-size":"10px",
+                "fill":"#FFF"
+
+              });
+
+            */
+            ;
+          break;
+
           case ("ordonner") :
             svg.selectAll("circle")
                 .data(data.data)
