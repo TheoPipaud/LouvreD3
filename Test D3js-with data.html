@@ -53,23 +53,17 @@
     <script src="jquery.js"></script>
     <script>
      
-      var width = window.innerWidth,
-          height = window.innerHeight;
-
-      // Initialise D3.js dans la div#chart
-      var svg = d3.select("#chart").append("svg")
-          .attr("width", width)
-          .attr("height", height);
 
       var data;
-
+      var svg;
       var margin = {  top:10,  right:10,   bottom:10,   left:10  };
       var NbCercle = 25;
       var MargeCercle = 20,
           Rangee = 0,
           x = 100,
           y = 100;
-
+      
+      renderCircles("svg", false, false, "#chart", window.innerWidth , window.innerHeight); // type , false , false, emplacement pour append, largeur, hauteur
 
 
       d3.json("data.json", function(json) {
@@ -117,13 +111,8 @@
 
 
       d3.selectAll(".btn").on("click", function() {
-          var annee   = $(this).data('annee');
-          var num     = $(this).data('num');
-          var echelle = 20;
-          var marge   = 20;
-          var signe;
           
-          renderCircles("apparaitre", false, data, $(this), echelle , marge);
+          renderCircles("apparaitre", false, data, $(this), 20 , 20); // type, false, data , bouton clique, échelle, marge
           
               // .on('mouseover', showColor)
               // .on('mouseout', resetColor);
@@ -188,26 +177,28 @@
       });
      
       var NbCercleDansColonne; // Index d'une boule sur une ligne dans une colonne
-      var posX = 200; // position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
       var posY; // Tableau des positions Y de chaque boule
-      var marge = 20; // marge entre chaque boule (1 boule ~= 16px)
       // var NbCercleDansColonne = [0,0]; // http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array     
-      var NbMaxInLigne; // Nb de boule max par ligne
       var CtNbInColonne; // Dernier index en Y d'une colonne
       
       
       $('.order').on("click", function() {
-          NbMaxInLigne = 30;
-          CtNbInColonne = [0,0];
+          CtNbInColonne = new Array();
           posY = Array();
-          NbCercleDansColonne = Array.apply(null, new Array(2)).map(Number.prototype.valueOf,0);
+          var posX = 200;// position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
+          var maxInlignes = 5;//maximum de boules dans une ligne
+          var marge = 20; //marge entre chaque boule (1 boule ~= 16px)
+          var nombreDeGrandesColonnes=3;
+          NbCercleDansColonne = Array.apply(null, new Array(nombreDeGrandesColonnes)).map(Number.prototype.valueOf,0);
+          for(var i=0; i<nombreDeGrandesColonnes; i++){
+              CtNbInColonne.push(0);
+          }
 
-          renderCircles("ordonner", "age", data[0]);
+          renderCircles("ordonner", "age", data[0], maxInlignes, marge, posX); 
 
           
                    
                     //   case (d.age <= 18) :
-                          
                     //       a++;
                     //       console.log('col 200__ i : ', i, "___ a : ", a);
                     //       console.log((a*marge)+col);
@@ -241,9 +232,16 @@
 
       });
       
-      function renderCircles(type, sousType, data, param1, param2 , param3){
+      function renderCircles(type, sousType, data, param1, param2, param3){
 
         switch(type){
+          
+          case ("svg"):
+            svg = d3.select(param1).append("svg")
+              .attr("width", param2)
+              .attr("height", param3);
+          break;
+
           case ("apparaitre"):
 
             var j       = 0;
@@ -320,23 +318,30 @@
                 .data(data.data)
                 .transition()
                 .attr({
-                  cx: function(d, i){
-                        $vari=0;
-                        if (d.age >= 18 ){
-                          $vari=1;
-                        }
-                        NbCercleDansColonne[$vari] += 1; // Informe d'une boule supp. dans la colonne   
-                        if((NbCercleDansColonne[$vari]-1)/NbMaxInLigne==1){ // Vérifie si on arrive au max de boule / ligne
-                          NbCercleDansColonne[$vari] = 1; // Remet l'index en X à 1
-                          CtNbInColonne[$vari] += 1;      // Incremente l'index en Y
-                        }                  
-                        posY[i] = 200 - marge * CtNbInColonne[$vari]; // Prépare la position en Y de la boule             
-                        return ($vari+1)*posX + (NbCercleDansColonne[$vari]-1)*marge; // Retourne la position en X de la boule
-                  },
-                  cy: function(data, i){
-                    return posY[i];
-                  }
-              });
+                  
+                      cx: function(d, i){
+                        console.log(CtNbInColonne);
+                          if(sousType=="age"){
+                              $vari=0;
+                              if (d.age >= 40 ){
+                                $vari=2;
+                              }else if(d.age >= 18 ){
+                                $vari=1;
+                              }
+                              NbCercleDansColonne[$vari] += 1; // Informe d'une boule supp. dans la colonne   
+                              if((NbCercleDansColonne[$vari]-1)/param1==1){ // Vérifie si on arrive au max de boule / ligne
+                                NbCercleDansColonne[$vari] = 1; // Remet l'index en X à 1
+                                CtNbInColonne[$vari] += 1;      // Incremente l'index en Y
+                              }                  
+                              posY[i] = 200 - param2 * CtNbInColonne[$vari]; // Prépare la position en Y de la boule             
+                              return ($vari+1)*param3 + (NbCercleDansColonne[$vari]-1)*param2; // Retourne la position en X de la boule
+
+                          }
+                      },
+                      cy: function(d, i){
+                            return posY[i];
+                      }
+                  });
           break;
 
           case ("couleur") :
