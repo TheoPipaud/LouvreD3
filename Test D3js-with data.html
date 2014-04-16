@@ -177,41 +177,41 @@
          renderCircles("couleur", "satisfaction");
       });
      
-      var NbCercleDansColonne; // Index d'une boule sur une ligne dans une colonne
-      var posY; // Tableau des positions Y de chaque boule
+      $NbCercleDansColonne=0; // Index d'une boule sur une ligne dans une colonne
+      $posY=0; // Tableau des positions Y de chaque boule
       // var NbCercleDansColonne = [0,0]; // http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array     
-      var CtNbInColonne; // Dernier index en Y d'une colonne
+      $CtNbInColonne=0; // Dernier index en Y d'une colonne
       
       $('.orderGenre').on("click", function() {
-          CtNbInColonne = new Array();
-          posY = Array();
-          var posX = 500;// position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
-          var maxInlignes = 24;//maximum de boules dans une ligne
-          var marge = 10; //marge entre chaque boule (1 boule ~= 16px)
-          var nombreDeGrandesColonnes=2;
-          var top = 460;
-          NbCercleDansColonne = Array.apply(null, new Array(nombreDeGrandesColonnes)).map(Number.prototype.valueOf,0);
-          for(var i=0; i<nombreDeGrandesColonnes; i++){
-              CtNbInColonne.push(0);
+          $CtNbInColonne = new Array();
+          $posY = Array();
+          $posX = 500;// position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
+          $maxInlignes = 24;//maximum de boules dans une ligne
+          $marge = 10; //marge entre chaque boule (1 boule ~= 16px)
+          $nombreDeGrandesColonnes=2;
+          $top = 460;
+          $NbCercleDansColonne = Array.apply(null, new Array($nombreDeGrandesColonnes)).map(Number.prototype.valueOf,0);
+          for(var i=0; i<$nombreDeGrandesColonnes; i++){
+              $CtNbInColonne.push(0);
           }
 
-          renderCircles("ordonner", "genre", data[2], maxInlignes, marge, posX, nombreDeGrandesColonnes, top); 
+          renderCircles("ordonner", "genre", data[2], $maxInlignes, $marge, $posX, $nombreDeGrandesColonnes, $top); 
       });
       
       $('.order').on("click", function() {
-          CtNbInColonne = new Array();
-          posY = Array();
-          var posX = 250;// position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
-          var maxInlignes = 12;//maximum de boules dans une ligne
-          var marge = 10; //marge entre chaque boule (1 boule ~= 16px)
-          var nombreDeGrandesColonnes=4;
-          var top = 460;
-          NbCercleDansColonne = Array.apply(null, new Array(nombreDeGrandesColonnes)).map(Number.prototype.valueOf,0);
-          for(var i=0; i<nombreDeGrandesColonnes; i++){
-              CtNbInColonne.push(0);
+          $CtNbInColonne = new Array();
+          $posY = Array();
+          $posX = 250;// position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
+          $maxInlignes = 12;//maximum de boules dans une ligne
+          $marge = 10; //marge entre chaque boule (1 boule ~= 16px)
+          $nombreDeGrandesColonnes=4;
+          $top = 460;
+          $NbCercleDansColonne = Array.apply(null, new Array($nombreDeGrandesColonnes)).map(Number.prototype.valueOf,0);
+          for(var i=0; i<$nombreDeGrandesColonnes; i++){
+              $CtNbInColonne.push(0);
           }
 
-          renderCircles("ordonner", "age", data[1], maxInlignes, marge, posX, nombreDeGrandesColonnes, top); 
+          renderCircles("ordonner", "age", data[1], $maxInlignes, $marge, $posX, $nombreDeGrandesColonnes, $top); 
 
           
                    
@@ -249,10 +249,16 @@
 
       });
       
+      $ageTab = new Array();
+      $genreTab = new Array();
+      
       function renderCircles(type, filtre, data, param1, param2, param3, param4, param5){
-
+        
+        $ageTab = [0,0,0,0];
+        $genreTab = [0,0];
+        
         switch(type){
-          
+    
           case ("svg"):
             svg = d3.select(param1).append("svg")
               .attr("width", param2)
@@ -261,8 +267,8 @@
 
           case ("apparaitre"):
 
-            var j       = 0;
-            var k       = 0;
+            $j = 0;
+            $k = 0;
 
             svg.selectAll("circle")
               .data(data[param1.data('num')].data)
@@ -272,60 +278,68 @@
                   if(i % 10 == 0 && i != 0){
                     // lorsqu'on arrive à 10 ou plus on soustrait 
                     // ce palier pour que i soit toujours entre 1 et 9
-                    k=i;
+                    $k=i;
                   }
-                  return (i-k)*param2+param3; // exemple : x20 pour l'échelle
+                  return (i-$k)*param2+param3; // exemple : x20 pour l'échelle
               })
               .attr('cy', function(d,i){
                   if(i % 10 == 0 && i != 0){
                     // à chaque modulo, on incrémente j
-                    j++;
+                    $j++;
                   }
-                  return j*param2+param3; // exemple : x20 pour l'échelle
+                  return $j*param2+param3; // exemple : x20 pour l'échelle
               })
               .attr('r',4)
               .attr('class', param1.data('annee'))
-              .style("fill", "rgb(200,45,0")  
-            ;
+              .style("fill", "rgb(200,45,0")  ;
           break;
 
           case ("ordonner") :
             svg.selectAll("circle")
                 .data(data.data)
                 .transition()
+                .duration(1000)
                 .attr({
                       cx: function(d, i){
-                        console.log(CtNbInColonne);
-                        console.log(d.genre);
                           if(filtre=="age"){
-                              $vari=0;
                               if (d.age >= 40){
                                 $vari=3;
+                                $ageTab[3]++;
                               }else if(d.age >= 30){
                                 $vari=2;
+                                $ageTab[2]++;
                               }else if(d.age >= 25){
                                 $vari=1;
+                                $ageTab[1]++;
+                              }else{
+                                $vari=0;
+                                $ageTab[0]++;
                               }
                           }else if(filtre=="genre"){
-                              $vari=0;
                               if (d.gender == "male"){
                                 $vari=1;
+                                $genreTab[1]++;
+                              }else{
+                                $vari=0;
+                                $genreTab[0]++;
                               }
                           }
 
-                              NbCercleDansColonne[$vari] += 1; // Informe d'une boule supp. dans la colonne   
-                              if((NbCercleDansColonne[$vari]-1)/param1==1){ // Vérifie si on arrive au max de boule / ligne
-                                NbCercleDansColonne[$vari] = 1; // Remet l'index en X à 1
-                                CtNbInColonne[$vari] += 1;      // Incremente l'index en Y
+                              $NbCercleDansColonne[$vari] += 1; // Informe d'une boule supp. dans la colonne   
+                              if(($NbCercleDansColonne[$vari]-1)/param1==1){ // Vérifie si on arrive au max de boule / ligne
+                                $NbCercleDansColonne[$vari] = 1; // Remet l'index en X à 1
+                                $CtNbInColonne[$vari] += 1;      // Incremente l'index en Y
                               }                  
-                              posY[i] = param5 - param2 * CtNbInColonne[$vari]; // Prépare la position en Y de la boule             
-                              return ((($vari+1)*param3 + (NbCercleDansColonne[$vari]-1)*param2)-(param3/2)-(param2*param1)/2); // Retourne la position en X de la boule
+                              $posY[i] = param5 - param2 * $CtNbInColonne[$vari]; // Prépare la position en Y de la boule             
+                              return ((($vari+1)*param3 + ($NbCercleDansColonne[$vari]-1)*param2)-(param3/2)-(param2*param1)/2); // Retourne la position en X de la boule
 
                       },
                       cy: function(d, i){
-                            return posY[i];
+                            return $posY[i];
                       }
                   });
+              console.log($ageTab);
+              renderText(filtre, param4);
           break;
 
           /*case ("couleur") :
@@ -348,6 +362,49 @@
                 });
           break;*/
         }
+      }
+      
+      function renderText(filtre, nbColonnes){
+
+          $('.monTexte').remove();
+
+          if(filtre=="age"){
+             var dataText=[[$ageTab[0], "de -18ans"], [$ageTab[1], " de 18 à 25ans"], [$ageTab[2], "de 25 à 40ans"], [$ageTab[3], "plus de 40ans"]];
+             var end_val = [$ageTab[0], $ageTab[1], $ageTab[2], $ageTab[3]];
+          }else if(filtre=="genre"){
+             var dataText=[[$genreTab[0], " de femmes"], [$genreTab[1], " d'hommes"]];
+             var end_val = [$genreTab[0], $genreTab[1]];
+          }
+              var start_val = 0,
+              duration = 2000;  
+              var texte = svg.selectAll("text")
+              .data(dataText)
+              .enter()
+              .append("g")
+              .attr("transform", function(d, i){ return ("translate(" + ((i+1)*1000*(1/nbColonnes)-(1000/(nbColonnes*2))-4) + ",525)"); })
+              .attr('class', 'monTexte');
+              texte.append("text")
+                .text(start_val)
+                .style("font-size", "3em")
+                .style("text-anchor", "middle")
+                .attr("height",250)
+                .transition()
+                .duration(1000)
+                .tween("text", function(d) {
+                  var i = d3.interpolate(this.textContent, d[0]),
+                  prec = (d[0] + "").split("."),
+                  round = (prec.length > 1) ? Math.pow(10, prec[1].length) : 1;
+                  return function(t) {
+                    this.textContent = Math.round(i(t) * round) / round+'%';
+                  };
+                });
+              texte.append("text")
+                .text(function(d){
+                  return d[1];
+                })
+                .style("text-anchor", "middle")
+                .attr('dy',25);
+
       }
 
 
