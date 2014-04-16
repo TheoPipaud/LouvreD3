@@ -45,7 +45,8 @@
     <button class="reset" data-annee="" data-num="">Reset couleur </button>
 
     <button class="satisfaction" data-annee="" data-num="">Satisfaction par couleur</button>
-    <button class="order" data-annee="" data-num="">Ordonner</button>
+    <button class="order" data-annee="" data-num="">OrdonnerAge</button>
+    <button class="orderGenre" data-annee="" data-num="">OrdonnerGenre</button>
 
     <div id="chart"></div>
 
@@ -63,7 +64,7 @@
           x = 100,
           y = 100;
       
-      renderCircles("svg", false, false, "#chart", window.innerWidth , window.innerHeight); // type , false , false, emplacement pour append, largeur, hauteur
+      renderCircles("svg", false, false, "#chart", 1000 , 560); // type , false , false, emplacement pour append, largeur, hauteur
 
 
       d3.json("data.json", function(json) {
@@ -181,20 +182,36 @@
       // var NbCercleDansColonne = [0,0]; // http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array     
       var CtNbInColonne; // Dernier index en Y d'une colonne
       
-      
-      $('.order').on("click", function() {
+      $('.orderGenre').on("click", function() {
           CtNbInColonne = new Array();
           posY = Array();
-          var posX = 200;// position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
-          var maxInlignes = 5;//maximum de boules dans une ligne
-          var marge = 20; //marge entre chaque boule (1 boule ~= 16px)
-          var nombreDeGrandesColonnes=3;
+          var posX = 500;// position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
+          var maxInlignes = 24;//maximum de boules dans une ligne
+          var marge = 10; //marge entre chaque boule (1 boule ~= 16px)
+          var nombreDeGrandesColonnes=2;
+          var top = 460;
           NbCercleDansColonne = Array.apply(null, new Array(nombreDeGrandesColonnes)).map(Number.prototype.valueOf,0);
           for(var i=0; i<nombreDeGrandesColonnes; i++){
               CtNbInColonne.push(0);
           }
 
-          renderCircles("ordonner", "age", data[0], maxInlignes, marge, posX); 
+          renderCircles("ordonner", "genre", data[2], maxInlignes, marge, posX, nombreDeGrandesColonnes, top); 
+      });
+      
+      $('.order').on("click", function() {
+          CtNbInColonne = new Array();
+          posY = Array();
+          var posX = 250;// position en X de la boule la plus à gauche de chaque colonne (calcul à faire en fonction de la largeur de la fenêtre + de la largeur des colonnes + le nombre de colonne)
+          var maxInlignes = 12;//maximum de boules dans une ligne
+          var marge = 10; //marge entre chaque boule (1 boule ~= 16px)
+          var nombreDeGrandesColonnes=4;
+          var top = 460;
+          NbCercleDansColonne = Array.apply(null, new Array(nombreDeGrandesColonnes)).map(Number.prototype.valueOf,0);
+          for(var i=0; i<nombreDeGrandesColonnes; i++){
+              CtNbInColonne.push(0);
+          }
+
+          renderCircles("ordonner", "age", data[1], maxInlignes, marge, posX, nombreDeGrandesColonnes, top); 
 
           
                    
@@ -232,7 +249,7 @@
 
       });
       
-      function renderCircles(type, sousType, data, param1, param2, param3){
+      function renderCircles(type, filtre, data, param1, param2, param3, param4, param5){
 
         switch(type){
           
@@ -266,50 +283,9 @@
                   }
                   return j*param2+param3; // exemple : x20 pour l'échelle
               })
-              .attr('r',8)
+              .attr('r',4)
               .attr('class', param1.data('annee'))
-              // .on('mouseover', showColor)
-              // .on('mouseout', resetColor);
-
-              // .attr("fill", function(d) {
-              //     // Couleur en fonction de l'age sur les points
-              //     return "rgb(0, "+ (255 - d.age * 5) +" , " + (255 - d.age * 3) + ")";
-              // });
-
-          // Affichage des "Ages" dans les cercles
-          // ______________________________________
-          
-          /*
-          svg.selectAll("text")
-              .data(data[num].data)
-              .enter()
-              .append("text")
-              .text(function(d){
-                return d.age;
-              })
-              .attr({
-                x: function(d, i){
-                  if(i % 10 == 0 && i != 0){
-                    // lorsqu'on arrive à 10 ou plus on soustrait 
-                    // ce palier pour que i soit toujours entre 1 et 9
-                    l=i;
-                  }
-                  return (i-l)*echelle+marge-5; // exemple : x20 pour l'échelle
-                },
-                y: function(d, i){
-                  if(i % 10 == 0 && i != 0){
-                    // à chaque modulo, on incrémente j
-                    m++;
-                  }
-                  return m*echelle+marge+3; // exemple : x20 pour l'échelle
-                },
-
-                "font-size":"10px",
-                "fill":"#FFF"
-
-              });
-
-            */
+              .style("fill", "rgb(200,45,0")  
             ;
           break;
 
@@ -318,25 +294,33 @@
                 .data(data.data)
                 .transition()
                 .attr({
-                  
                       cx: function(d, i){
                         console.log(CtNbInColonne);
-                          if(sousType=="age"){
+                        console.log(d.genre);
+                          if(filtre=="age"){
                               $vari=0;
                               if (d.age >= 40){
+                                $vari=3;
+                              }else if(d.age >= 30){
                                 $vari=2;
-                              }else if(d.age >= 18){
+                              }else if(d.age >= 25){
                                 $vari=1;
                               }
+                          }else if(filtre=="genre"){
+                              $vari=0;
+                              if (d.gender == "male"){
+                                $vari=1;
+                              }
+                          }
+
                               NbCercleDansColonne[$vari] += 1; // Informe d'une boule supp. dans la colonne   
                               if((NbCercleDansColonne[$vari]-1)/param1==1){ // Vérifie si on arrive au max de boule / ligne
                                 NbCercleDansColonne[$vari] = 1; // Remet l'index en X à 1
                                 CtNbInColonne[$vari] += 1;      // Incremente l'index en Y
                               }                  
-                              posY[i] = 200 - param2 * CtNbInColonne[$vari]; // Prépare la position en Y de la boule             
-                              return ($vari+1)*param3 + (NbCercleDansColonne[$vari]-1)*param2; // Retourne la position en X de la boule
+                              posY[i] = param5 - param2 * CtNbInColonne[$vari]; // Prépare la position en Y de la boule             
+                              return ((($vari+1)*param3 + (NbCercleDansColonne[$vari]-1)*param2)-(param3/2)-(param2*param1)/2); // Retourne la position en X de la boule
 
-                          }
                       },
                       cy: function(d, i){
                             return posY[i];
@@ -344,11 +328,11 @@
                   });
           break;
 
-          case ("couleur") :
+          /*case ("couleur") :
                svg.selectAll("circle")
                 .transition()
                 .style("fill", function(d) {
-                    if(sousType=="satisfaction"){
+                    if(filtre=="satisfaction"){
                         if(d.satisfaction == "très"){
                             return "rgb(17, 224, 17)";
                         }else if(d.satisfaction == "assez"){
@@ -356,13 +340,13 @@
                         }else if(d.satisfaction == "peu"){
                             return "rgb(221, 78, 17)";
                         }
-                    }else if(sousType=="reset"){
+                    }else if(filtre=="reset"){
                         return "rgb(0, 0, 0)";
-                    }else if(sousType=="age"){
+                    }else if(filtre=="age"){
                         return "rgb(0, "+ (255 - d.age * 5) +" , " + (255 - d.age * 3) + ")";
                     }
                 });
-          break;
+          break;*/
         }
       }
 
